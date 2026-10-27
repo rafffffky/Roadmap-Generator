@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!--
+  Tech Skill Gap & Career Roadmap Generator
+  File: index.html — HTML structure only; styles in style.css, behaviour in script.js
+-->
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech Skill Gap &amp; Career Roadmap Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<header>
+  <!-- CHANGED: A1+A2 – language + theme toggles -->
+  <div class="header-controls">
+    <button class="hdr-btn active" id="btn-lang-id" type="button" aria-pressed="true"  data-lang="id">ID</button>
+    <button class="hdr-btn"        id="btn-lang-en" type="button" aria-pressed="false" data-lang="en">EN</button>
+    <button class="hdr-btn" id="btn-theme" type="button" aria-label="Toggle dark mode" aria-pressed="false">🌙</button>
+  </div>
+  <h1 data-i18n="appTitle">🧭 Generator Celah Skill &amp; Peta Karier Teknologi</h1>
+  <p data-i18n="appSubtitle">Pilih jalur karier · tandai skill yang dimiliki · dapatkan roadmap personal</p>
+</header>
+
+<div class="container">
+
+  <!-- Role Selector -->
+  <div class="card card-full">
+    <div class="card-title">
+      <span class="icon" aria-hidden="true">🎯</span>
+      <span data-i18n="chooseRole">Pilih Target Jalur Karier</span>
+    </div>
+    <label for="role-select" class="sr-only" data-i18n="chooseRole">Pilih Target Jalur Karier</label>
+    <select id="role-select">
+      <option value="" data-i18n="roleSelectPlaceholder">— Pilih peran untuk memulai —</option>
+      <option value="frontend">Frontend Developer</option>
+      <option value="backend">Backend Developer</option>
+      <option value="datascientist">Data Scientist</option>
+      <option value="aiml">AI / ML Engineer</option>
+      <option value="devops">DevOps Engineer</option>
+      <option value="mobile">Mobile Developer</option>
+      <option value="uiux">UI/UX Designer</option>
+      <option value="cybersec">Cybersecurity Analyst</option>
+    </select>
+
+    <div class="controls-row" id="controls-row" style="display:none">
+      <div class="hours-group">
+        <label for="hours-input" data-i18n="studyHours">Jam belajar/minggu:</label>
+        <input type="number" id="hours-input" value="10" min="1" max="60" aria-label="Jam belajar per minggu" />
+      </div>
+      <button class="btn btn-reset"   id="btn-reset"  type="button" data-i18n="btnReset">↺ Reset</button>
+      <button class="btn btn-copy"    id="btn-copy"   type="button" data-i18n="btnCopy">⎘ Salin Roadmap</button>
+      <button class="btn btn-print"   id="btn-print"  type="button" data-i18n="btnPrint">🖨 Cetak / PDF</button>
+      <span id="copy-confirm" aria-live="polite" data-i18n="copied">✓ Disalin!</span>
+    </div>
+
+    <!-- CHANGED: C11 – Export / Import -->
+    <div class="export-row">
+      <button class="btn btn-neutral" id="btn-export" type="button" data-i18n="btnExport">⬇ Export JSON</button>
+      <button class="btn btn-neutral" id="btn-import" type="button" data-i18n="btnImport">⬆ Import JSON</button>
+      <input type="file" id="import-file" accept=".json" class="sr-only" aria-label="Import JSON file" />
+      <span id="import-status" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+
+  <!-- CHANGED: career info card — salary & job market info -->
+  <div class="card card-full" id="career-info-card" style="display:none" aria-live="polite" aria-atomic="true">
+    <div class="card-title">
+      <span class="icon" aria-hidden="true">💼</span>
+      <span id="career-info-title">Informasi Gaji &amp; Prospek Kerja</span>
+    </div>
+    <div class="career-info-grid">
+      <div class="career-info-section">
+        <div class="career-info-label" id="career-salary-label">Kisaran Gaji (Junior–Mid)</div>
+        <div class="career-salary-value" id="career-salary-value"></div>
+      </div>
+      <div class="career-info-section career-info-demand-section">
+        <div class="career-info-label" id="career-demand-label">Permintaan Pasar</div>
+        <span class="career-demand-badge" id="career-demand-badge"></span>
+      </div>
+    </div>
+    <div class="career-info-section career-info-overview">
+      <div class="career-info-label" id="career-overview-label">Gambaran Peran</div>
+      <p class="career-overview-text" id="career-overview-text"></p>
+    </div>
+    <p class="career-source-text" id="career-source-text"></p>
+    <p class="career-disclaimer" id="career-disclaimer"></p>
+  </div>
+
+  <!-- Checklist -->
+  <div class="card">
+    <div class="card-title">
+      <span class="icon" aria-hidden="true">📋</span>
+      <span data-i18n="checklistTitle">Daftar Skill Penting</span>
+    </div>
+    <div id="checklist-container">
+      <div class="placeholder">
+        <span class="emoji" aria-hidden="true">🗂️</span>
+        <span data-i18n="checklistEmpty">Pilih jalur karier di atas untuk melihat skill yang dibutuhkan.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Score -->
+  <div class="card">
+    <div class="card-title">
+      <span class="icon" aria-hidden="true">📊</span>
+      <span data-i18n="scoreTitle">Skor Kesiapan</span>
+    </div>
+    <div id="score-container" aria-live="polite" aria-atomic="true">
+      <div class="placeholder">
+        <span class="emoji" aria-hidden="true">📈</span>
+        <span data-i18n="scorePlaceholder">Skor kesiapan akan muncul di sini.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skill Gap -->
+  <div class="card">
+    <div class="card-title">
+      <span class="icon" aria-hidden="true">⚠️</span>
+      <span data-i18n="gapTitle">Ringkasan Celah Skill</span>
+    </div>
+    <div id="gap-container" aria-live="polite" aria-atomic="true">
+      <div class="placeholder">
+        <span class="emoji" aria-hidden="true">🔍</span>
+        <span data-i18n="gapPlaceholder">Skill yang kurang akan muncul di sini.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="card card-full">
+    <div class="card-title">
+      <span class="icon" aria-hidden="true">🗺️</span>
+      <span data-i18n="roadmapTitle">Peta Pembelajaran Personal</span>
+    </div>
+    <div id="roadmap-container">
+      <div class="placeholder">
+        <span class="emoji" aria-hidden="true">🚀</span>
+        <span data-i18n="roadmapPlaceholder">Peta langkah-langkah belajar akan dibuat di sini.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANGED: C7 – Market Matcher card -->
+  <div class="card card-full" id="market-matcher-card">
+    <div class="card-title">
+      <span class="icon" aria-hidden="true">🔬</span>
+      <span data-i18n="matcherTitle">Pencocokan Skill Lowongan Kerja</span>
+    </div>
+    <p class="matcher-privacy" data-i18n="matcherPrivacy">🔒 Analisis berjalan sepenuhnya di browser Anda. Tidak ada data yang dikirimkan ke server.</p>
+    <div class="matcher-textarea-wrap">
+      <textarea id="job-textarea" maxlength="5000" data-i18n-placeholder="matcherPlaceholder"
+        placeholder="Tempel teks lowongan kerja di sini (maks. 5000 karakter)…" aria-label="Teks lowongan kerja"></textarea>
+    </div>
+    <div id="char-counter">0 / 5000</div>
+    <div class="matcher-btns">
+      <button class="btn btn-copy" id="btn-analyze"  type="button" data-i18n="btnAnalyze">🔍 Analisis</button>
+      <button class="btn btn-neutral" id="btn-clear-jd" type="button" data-i18n="btnClear">✕ Hapus</button>
+      <!-- CHANGED: Item 1 – sample text button -->
+      <button class="btn btn-sample" id="btn-sample" type="button" data-i18n="btnSample">📄 Coba Teks Contoh</button>
+    </div>
+    <div id="match-results" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+</div><!-- /.container -->
+
+<!-- CHANGED: Item 3 – page footer (identical in both languages) -->
+<footer class="page-footer">
+  © 2026 Rafky Aqeela. Developed as part of personal portfolio based on IBM SkillsBuild AI for Programming Workshop.
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
