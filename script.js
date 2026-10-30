@@ -76,7 +76,7 @@ const I18N = {
     remainingText:       'tersisa',
     // CHANGED: Item 1 – sample button + Item 2 – matcher hint
     btnSample:           '📄 Coba Teks Contoh',
-    matcherHint:         "Tempel teks lowongan atau klik 'Coba Teks Contoh' untuk melihat hasil analisis.",
+    matcherHint:         "Tempel teks lowongan atau klik 'Coba Teks Contoh'.",
     // CHANGED: career info card labels
     careerInfoTitle:     'Informasi Gaji & Prospek Kerja',
     careerSalaryLabel:   'Kisaran Gaji (Junior–Mid)',
@@ -156,7 +156,7 @@ const I18N = {
     remainingText:       'remaining',
     // CHANGED: Item 1 – sample button + Item 2 – matcher hint
     btnSample:           '📄 Try Sample Text',
-    matcherHint:         "Paste a job posting or click 'Try Sample Text' to see analysis results.",
+    matcherHint:         "Paste a job posting or click 'Try Sample Text'.",
     // CHANGED: career info card labels
     careerInfoTitle:     'Salary & Job Market Info',
     careerSalaryLabel:   'Salary Range (Junior–Mid)',
@@ -1279,19 +1279,30 @@ function countTermInText(term, text) {
   } catch (_) { return 0; }
 }
 
+// CHANGED: Item 2 – show hint while textarea is empty
+function showMatcherHint() {
+  const resultsEl = qs('#match-results');
+  if (!resultsEl) return;
+  resultsEl.innerHTML = '';
+  const p = ce('p');
+  p.className = 'matcher-hint';
+  p.textContent = t('matcherHint');
+  resultsEl.appendChild(p);
+}
+
 function analyzeJobPosting() {
   const ta = qs('#job-textarea');
   const resultsEl = qs('#match-results');
   const text = ta.value.trim();
 
+  // CHANGED: Item 2 – show hint if textarea is empty before anything else
+  if (!text) {
+    showMatcherHint();
+    return;
+  }
   if (!currentRole) {
     resultsEl.innerHTML = ''; const p = ce('p'); p.style.cssText = 'color:var(--text-muted);font-size:.85rem;';
     p.textContent = t('matchNoRole'); resultsEl.appendChild(p); return;
-  }
-  if (!text) { // CHANGED: Item 2 – show hint instead of no-match when textarea is empty
-    resultsEl.innerHTML = '';
-    const p = ce('p'); p.className = 'matcher-hint';
-    p.textContent = t('matcherHint'); resultsEl.appendChild(p); return;
   }
 
   const skillMap = getSkillMap(currentRole);
@@ -1443,7 +1454,7 @@ function exportJSON() {
 
 function importJSON(file) {
   const statusEl = qs('#import-status');
-  statusEl.className = ''; statusEl.style.display = 'none'; statusEl.textContent = '';
+  statusEl.className = ''; statusEl.style.display = ''; statusEl.textContent = ''; // CHANGED: do not force inline display:none
 
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -1478,6 +1489,7 @@ function importJSON(file) {
     customSkills[role] = (parsed.customSkills || []).filter(cs => cs.id && cs.name);
     saveProgress(role); saveCustom(role);
     qs('#controls-row').style.display = 'flex';
+    renderCareerInfo(role); // CHANGED: update career info card on import
     renderChecklist(role); updateDashboard();
     statusEl.className = 'ok'; statusEl.textContent = t('importOk');
     setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
@@ -1503,21 +1515,24 @@ function validateImport(obj) {
 
 // ===== COPY ROADMAP TEXT =====
 // ═════════════════════════════════════════════════════════════
-// COPY ROADMAP TEXT
+// COPY ROADMAP TEXT — CHANGED: include custom skills and localized headers
 // ═════════════════════════════════════════════════════════════
 function buildRoadmapText() {
   if (!currentRole) return '';
   const role = ROLES[currentRole]; const skillMap = getSkillMap(currentRole); const hrs = studyHours();
-  let out = 'Career Roadmap: ' + role.label + '\n' + '='.repeat(40) + '\n\n';
+  const isId = currentLang === 'id';
+  let out = (isId ? 'Peta Karier: ' : 'Career Roadmap: ') + role.label + '\n' + '='.repeat(40) + '\n\n';
   const state = computeState();
-  out += 'Readiness: ' + state.pct + '% (' + state.mastered + '/' + state.total + ' skills mastered)\n\n';
+  out += (isId ? 'Kesiapan: ' : 'Readiness: ') + state.pct + '% (' + state.mastered + '/' + state.total + ' ' + (isId ? 'skill dikuasai' : 'skills mastered') + ')\n\n';
   role.roadmap.forEach((ph, i) => {
-    const missing = ph.skills.filter(id => (skillState[id] || 0) < 1);
+    let skillIds = [...ph.skills];
+    (customSkills[currentRole] || []).filter(cs => (cs.phase || 2) === i + 1).forEach(cs => skillIds.push(cs.id));
+    const missing = skillIds.filter(id => !skillMap[id] || (skillState[id] || 0) < 1);
     if (missing.length === 0) return;
-    out += 'PHASE ' + (i+1) + ': ' + ph.phase + '\n' + ph.note + '\n';
+    out += (isId ? 'FASE ' : 'PHASE ') + (i+1) + ': ' + ph.phase + '\n' + ph.note + '\n';
     missing.forEach((id, j) => {
       const s = skillMap[id]; if (!s) return;
-      const sw = s.hours ? Math.ceil(s.hours / hrs) + ' wks' : '';
+      const sw = s.hours ? Math.ceil(s.hours / hrs) + (isId ? ' mgg' : ' wks') : '';
       out += '  ' + (j+1) + '. ' + s.name + (sw ? ' (' + sw + ')' : '') + '\n';
       out += '     ' + s.tip + '\n';
       if (s.resource) out += '     ' + s.resource + '\n';
@@ -1575,7 +1590,13 @@ function launchConfetti() {
 // Role change
 qs('#role-select').addEventListener('change', function() {
   const role = this.value; scoreDomBuilt = false; lastMilestone = -1;
-  inDemandSkillIds = new Set(); qs('#match-results').innerHTML = '';
+  inDemandSkillIds = new Set();
+  const ta = qs('#job-textarea');
+  if (!ta.value.trim()) {
+    showMatcherHint(); // CHANGED: Item 2 – show hint if empty
+  } else {
+    qs('#match-results').innerHTML = '';
+  }
   if (!role) {
     currentRole = null; skillState = {};
     qs('#controls-row').style.display = 'none';
@@ -1644,8 +1665,8 @@ qs('#btn-analyze').addEventListener('click', analyzeJobPosting);
 qs('#btn-clear-jd').addEventListener('click', function() {
   qs('#job-textarea').value = '';
   qs('#char-counter').textContent = '0 / 5000';
-  qs('#match-results').innerHTML = '';
   qs('#char-counter').className = '';
+  showMatcherHint(); // CHANGED: Item 2 – show hint on clear
   inDemandSkillIds = new Set();
   if (currentRole) { renderChecklist(currentRole); renderRoadmap(currentRole); }
 });
@@ -1671,6 +1692,11 @@ function setLanguage(lang) {
   qs('#btn-lang-id').classList.toggle('active', lang==='id');
   qs('#btn-lang-en').classList.toggle('active', lang==='en');
   applyI18N();
+  // CHANGED: Item 2 – update matcher hint on language change if textarea is empty or hint is showing
+  const ta = qs('#job-textarea');
+  if (!ta || !ta.value.trim() || qs('#match-results .matcher-hint')) {
+    showMatcherHint();
+  }
   // Re-render dynamic content with new strings
   if (currentRole) { renderCareerInfo(currentRole); renderChecklist(currentRole); updateDashboard(); } // CHANGED: re-render career info on lang switch
   else {
@@ -1718,4 +1744,7 @@ qs('#btn-theme').addEventListener('click', function() {
   // CHANGED: A2 – restore theme
   const savedTheme = loadPref('skillgap_theme', 'light');
   setTheme(savedTheme === 'dark');
+
+  // CHANGED: Item 2 – show initial empty-state hint
+  showMatcherHint();
 })();

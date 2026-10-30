@@ -14,15 +14,16 @@
   --border-mid:  #B8CBE4;
   --text:        #0D1F35;
   --text-muted:  #3D5A78;
-  --text-faint:  #7A97B8;
+  --text-faint:  #4B6584; /* CHANGED: Item 4 – WCAG AA compliant muted text */
   /* Primary accent: ITS deep blue */
   --accent:      #0B4F9C;
   --accent-light:#E0ECFA;
   --accent-mid:  #A3C4ED;
-  /* Secondary accent: ITS gold — used only for borders/backgrounds, NOT as text */
+  /* Secondary accent: ITS gold — used for borders/backgrounds; dark gold for text */
   --gold:        #F5B301;
-  --gold-light:  #FFF8DC;
+  --gold-light:  #FFF9E6;
   --gold-mid:    #F5C842;
+  --gold-text:   #8A5800;
   /* Semantic colors — unchanged roles */
   --green:       #059669;
   --green-light: #D1FAE5;
@@ -51,8 +52,8 @@
   --border:      #1E3A5F;
   --border-mid:  #2E5484;
   --text:        #E8F1FB;
-  --text-muted:  #8BAFD4;
-  --text-faint:  #4A7099;
+  --text-muted:  #A3C5E8;
+  --text-faint:  #8BB0D8; /* CHANGED: Item 4 – WCAG AA compliant muted text */
   /* Primary accent: lighter ITS blue for dark bg */
   --accent:      #5B9BE6;
   --accent-light:#0D2744;
@@ -61,6 +62,7 @@
   --gold:        #F5B301;
   --gold-light:  #2A2000;
   --gold-mid:    #7A5900;
+  --gold-text:   #FCD34D;
   /* Semantic colors */
   --green:       #34D399;
   --green-light: #064E3B;
@@ -458,7 +460,7 @@ header p { margin-top: .4rem; color: var(--text-muted); font-size: .95rem; }
 #job-textarea::placeholder  { color: var(--text-faint); }
 #char-counter { font-size: .72rem; color: var(--text-faint); text-align: right; margin-top: .2rem; }
 #char-counter.warn { color: var(--red); }
-.matcher-btns { display: flex; gap: .5rem; margin-top: .6rem; align-items: center; }
+.matcher-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; align-items: center; }
 
 /* Match results */
 #match-results { margin-top: 1rem; }
