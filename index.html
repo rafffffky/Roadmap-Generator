@@ -28,9 +28,12 @@
 <div class="container">
 
   <!-- Role Selector -->
-  <div class="card card-full">
+  <div class="card card-full card-role">
     <div class="card-title">
-      <span class="icon" aria-hidden="true">🎯</span>
+      <span class="card-index">01</span>
+      <span class="icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+      </span>
       <span data-i18n="chooseRole">Pilih Target Jalur Karier</span>
     </div>
     <label for="role-select" class="sr-only" data-i18n="chooseRole">Pilih Target Jalur Karier</label>
@@ -67,9 +70,12 @@
   </div>
 
   <!-- CHANGED: career info card — salary & job market info -->
-  <div class="card card-full" id="career-info-card" style="display:none" aria-live="polite" aria-atomic="true">
+  <div class="card card-full card-career" id="career-info-card" style="display:none" aria-live="polite" aria-atomic="true">
     <div class="card-title">
-      <span class="icon" aria-hidden="true">💼</span>
+      <span class="card-index">02</span>
+      <span class="icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </span>
       <span id="career-info-title">Informasi Gaji &amp; Prospek Kerja</span>
     </div>
     <div class="career-info-grid">
@@ -91,9 +97,12 @@
   </div>
 
   <!-- Checklist -->
-  <div class="card">
+  <div class="card card-checklist">
     <div class="card-title">
-      <span class="icon" aria-hidden="true">📋</span>
+      <span class="card-index">03</span>
+      <span class="icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </span>
       <span data-i18n="checklistTitle">Daftar Skill Penting</span>
     </div>
     <div id="checklist-container">
@@ -105,9 +114,12 @@
   </div>
 
   <!-- Score -->
-  <div class="card">
+  <div class="card card-score">
     <div class="card-title">
-      <span class="icon" aria-hidden="true">📊</span>
+      <span class="card-index">04</span>
+      <span class="icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </span>
       <span data-i18n="scoreTitle">Skor Kesiapan</span>
     </div>
     <div id="score-container" aria-live="polite" aria-atomic="true">
@@ -119,9 +131,12 @@
   </div>
 
   <!-- Skill Gap -->
-  <div class="card">
+  <div class="card card-gap">
     <div class="card-title">
-      <span class="icon" aria-hidden="true">⚠️</span>
+      <span class="card-index">05</span>
+      <span class="icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </span>
       <span data-i18n="gapTitle">Ringkasan Celah Skill</span>
     </div>
     <div id="gap-container" aria-live="polite" aria-atomic="true">
@@ -133,9 +148,12 @@
   </div>
 
   <!-- Roadmap -->
-  <div class="card card-full">
+  <div class="card card-full card-roadmap">
     <div class="card-title">
-      <span class="icon" aria-hidden="true">🗺️</span>
+      <span class="card-index">06</span>
+      <span class="icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      </span>
       <span data-i18n="roadmapTitle">Peta Pembelajaran Personal</span>
     </div>
     <div id="roadmap-container">
@@ -147,9 +165,12 @@
   </div>
 
   <!-- CHANGED: C7 – Market Matcher card -->
-  <div class="card card-full" id="market-matcher-card">
+  <div class="card card-full card-matcher" id="market-matcher-card">
     <div class="card-title">
-      <span class="icon" aria-hidden="true">🔬</span>
+      <span class="card-index">07</span>
+      <span class="icon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
       <span data-i18n="matcherTitle">Pencocokan Skill Lowongan Kerja</span>
     </div>
     <p class="matcher-privacy" data-i18n="matcherPrivacy">🔒 Analisis berjalan sepenuhnya di browser Anda. Tidak ada data yang dikirimkan ke server.</p>
